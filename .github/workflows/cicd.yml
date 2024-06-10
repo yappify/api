@@ -1,0 +1,7 @@
+name: CI/CD
+on:
+  push:
+    branches:
+    - main
+
+# Write your ci/cd yaml script here...
