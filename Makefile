@@ -10,6 +10,8 @@ help:
 	@echo "7. 'make db-migrate-up': run goose database up migration"
 	@echo "8. 'make db-migrate-down': run goose database down migration"
 	@echo "9. 'make image': build docker image for the api"
+	@echo "10. 'make up-image': run the api in a docker container"
+	@echo "11. 'make down-image': run the api in a docker container"
 
 # run: run the api
 run:
@@ -19,7 +21,9 @@ run:
 # tv: clean up unused dependencies and add new dependencies to /vendor
 tv:
 	@echo "[Yappify] Cleaning up unused dependencies and storing new dependencies in /vendor..."
+	sudo chmod -R 755 ./db-data
 	go mod tidy && go mod vendor
+	sudo chmod -R 700 ./db-data
 	@echo "[Yappify] Operation successfully completed!"
 
 # up-db: start postgres service in a docker container
@@ -59,9 +63,15 @@ image:
 	docker build -f docker/Dockerfile -t yappify-api .
 	@echo "[Yappify] Successfully built docker image. To use it, run 'docker run yappify-api'"
 
-# image: run docker image in development
-run-image-dev:
+# up-image: run the api in a docker container
+up-image:
 	@echo "[Yappify] Running Yappify API in a docker container..."
 	chmod +x scripts/run_image.sh
 	./scripts/run_image.sh
 	@echo "[Yappify] Yappify API is now running in the background..."
+
+# down-image: terminate the containerized api
+down-image:
+	@echo "[Yappify] Stopping container 'yappify-api'"
+	docker stop yappify-api
+	@echo "[Yappify] Successfully stopped container 'yappify-api'"

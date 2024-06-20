@@ -11,6 +11,9 @@ import (
 	"github.com/yappify/api/internal/database"
 )
 
+const DEFAULT_PORT = "8000"
+const DEVELOPMENT_DB_URL = "postgresql://postgres:postgres@localhost:5432/db?sslmode=disable"
+
 func main() {
 	port, dbURL := loadEnv()
 
@@ -29,7 +32,7 @@ func main() {
 		Handler: api.routes(),
 	}
 
-	log.Printf("Starting server on port %s...\n", port)
+	log.Printf("Started server on port %s...\n", port)
 
 	// Start http server
 	err = srv.ListenAndServe()
@@ -41,15 +44,25 @@ func main() {
 func loadEnv() (string, string) {
 	godotenv.Load(".env")
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8000"
-	}
+	environment := os.Getenv("ENVIRONMENT")
+	switch environment {
+	case "development":
+		return DEFAULT_PORT, DEVELOPMENT_DB_URL
+	case "production":
+		port := os.Getenv("PORT")
+		if port == "" {
+			port = "8000"
+		}
 
-	dbURL := os.Getenv("DB_URL")
-	if dbURL == "" {
-		log.Fatal("DB_URL is not found in the environment")
-	}
+		dbURL := os.Getenv("DB_URL")
+		if dbURL == "" {
+			log.Fatal("DB_URL is not found in the environment")
+		}
 
-	return port, dbURL
+		return port, dbURL
+
+	default:
+		log.Fatal("ENVIRONMENT is not found in the environment")
+		return "", ""
+	}
 }

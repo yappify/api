@@ -7,7 +7,62 @@ package database
 
 import (
 	"context"
+	"database/sql"
+	"time"
+
+	"github.com/google/uuid"
 )
+
+const createUser = `-- name: CreateUser :one
+INSERT INTO users (id, auth_type, name, email, password, is_banned, created_at, updated_at)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+RETURNING id, auth_type, name, email, password, is_banned, created_at, updated_at
+`
+
+type CreateUserParams struct {
+	ID        uuid.UUID
+	AuthType  string
+	Name      string
+	Email     string
+	Password  sql.NullString
+	IsBanned  bool
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
+	row := q.db.QueryRowContext(ctx, createUser,
+		arg.ID,
+		arg.AuthType,
+		arg.Name,
+		arg.Email,
+		arg.Password,
+		arg.IsBanned,
+		arg.CreatedAt,
+		arg.UpdatedAt,
+	)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.AuthType,
+		&i.Name,
+		&i.Email,
+		&i.Password,
+		&i.IsBanned,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const deleteUserById = `-- name: DeleteUserById :exec
+DELETE FROM users WHERE id = $1
+`
+
+func (q *Queries) DeleteUserById(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.ExecContext(ctx, deleteUserById, id)
+	return err
+}
 
 const getAllUsers = `-- name: GetAllUsers :many
 SELECT id, auth_type, name, email, password, is_banned, created_at, updated_at FROM users
@@ -43,4 +98,85 @@ func (q *Queries) GetAllUsers(ctx context.Context) ([]User, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+const getUserByEmail = `-- name: GetUserByEmail :one
+SELECT id, auth_type, name, email, password, is_banned, created_at, updated_at FROM users WHERE email = $1
+`
+
+func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserByEmail, email)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.AuthType,
+		&i.Name,
+		&i.Email,
+		&i.Password,
+		&i.IsBanned,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getUserById = `-- name: GetUserById :one
+SELECT id, auth_type, name, email, password, is_banned, created_at, updated_at FROM users WHERE id = $1
+`
+
+func (q *Queries) GetUserById(ctx context.Context, id uuid.UUID) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserById, id)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.AuthType,
+		&i.Name,
+		&i.Email,
+		&i.Password,
+		&i.IsBanned,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const updateUserById = `-- name: UpdateUserById :one
+UPDATE users
+SET auth_type = $2, name = $3, email = $4, password = $5, is_banned = $6, updated_at = $7
+WHERE id = $1
+RETURNING id, auth_type, name, email, password, is_banned, created_at, updated_at
+`
+
+type UpdateUserByIdParams struct {
+	ID        uuid.UUID
+	AuthType  string
+	Name      string
+	Email     string
+	Password  sql.NullString
+	IsBanned  bool
+	UpdatedAt time.Time
+}
+
+func (q *Queries) UpdateUserById(ctx context.Context, arg UpdateUserByIdParams) (User, error) {
+	row := q.db.QueryRowContext(ctx, updateUserById,
+		arg.ID,
+		arg.AuthType,
+		arg.Name,
+		arg.Email,
+		arg.Password,
+		arg.IsBanned,
+		arg.UpdatedAt,
+	)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.AuthType,
+		&i.Name,
+		&i.Email,
+		&i.Password,
+		&i.IsBanned,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }

@@ -21,6 +21,7 @@ func (api *Config) routes() http.Handler {
 	}))
 
 	router.Get("/health", api.handleHealthCheck)
+	router.Post("/users", api.handleCreateUser)
 
 	return router
 }
