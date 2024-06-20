@@ -70,4 +70,4 @@ There is likely a `make` script you can run to perform common commands. You can 
 make help
 ```
 
-If you repeatedly had to use run a certain command that is not yet defined in the Makefile, please do add that command and update the `help` target.
+If you repeatedly had to run a certain command that is not yet defined in the Makefile, please do add that command and update the `help` target.
