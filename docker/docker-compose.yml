@@ -1,0 +1,19 @@
+services:
+
+  postgres:
+    container_name: db
+    image: 'postgres:14.2'
+    ports:
+      - "5432:5432"
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+
+volumes:
+  pg-data: {}
