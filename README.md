@@ -1,51 +1,34 @@
-### [CLICK HERE TO READ INSTRUCTIONS (delete afterwards)](#template-instructions)
-
-# Repository Name
+# Yappify API
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/yappify/template/blob/main/LICENSE) ![ci-badge](https://github.com/yappify/template/actions/workflows/cicd.yml/badge.svg) ![Go](https://img.shields.io/badge/Go-blue.svg?style=flat&logo=go&logoColor=white)
 
-Lead maintainer: [@abyanmajid](https://github.com/abyanmajid) (change as needed) \
-Documentation: Link to documentation here...
+Lead maintainer: [@abyanmajid](https://github.com/abyanmajid) \
+Documentation: [github.com/yappify/api/tree/main/docs](https://github.com/yappify/api/tree/main/docs)
 
-Reference for markdown badges: [Markdown Badges](https://github.com/Ileriayo/markdown-badges) (delete this line)
-
-Write the description for your repository here. You may also add other sections e.g., for describing the architecture of your solution, etc.
+This source code makes up the RESTful API that serves the backend server of *Yappify*. it is a monolith written in *Go*, with the *chi* router, *PostgreSQL* database, and *sqlc* ORM.
 
 ## Contributing
-List the step-by-step procedure which others can follow to make a contribution. For example:
+
+1. Quickly set up development environment by running the following
 ```
-git clone https://github.com/yappify/template.git .
-git checkout -b my-branch
-make build
+mkdir yappify-api && cd yappify-api
+git clone https://github.com/yappify/api.git .
+cp .env.default .env && rm .env.default
+```
+
+2. Start up docker desktop and start a postgres service in the background
+```
+make db-up
+```
+
+3. Now, run the server
+```
 make run
 ```
 
-Or, run in a docker container
-```
-cd docker && docker run
-```
+Alternatively, to run the server in a docker container. To do this, run:
+1. `make image` to build a docker image of the server
+2. `make image-up` to start the server in a docker container
+3. `make image-down` to stop the container.
 
-## Template Instructions
-
-The template contains the following:
-
-- `.github/workflows/cicd.yml` - This is where you write your YAML script for CI/CD using GitHub Actions (including automated testing and deployment to cloud)
-- `.gitattributes` - This is where you put any attributes for git and GitHub, if there is any
-- `.gitignore` - This is where you specify files to exclude out of version control
-- `Makefile` - This is where you write your `make` script for convenient building of your solution
-
-Start working by adding your own files and folders as needed.
-
-### Git workflow
-
-You should follow this process to modify the remote repository:
-
-1. Create a new branch for development.
-2. After finishing a feature, submit a pull request to `staging` and merge (this will reflect the changes in the staging deployment).
-3. If there are no issues in staging, make a pull request to `main` and merge (this will reflect the changes in production).
-
-```mermaid
-graph LR
-    my-branch --> staging
-    staging --> main
-```
+You can now start making modifications. For more information, please consult the [documentation.](https://github.com/yappify/api/tree/main/docs)
