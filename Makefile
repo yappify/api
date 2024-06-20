@@ -63,15 +63,15 @@ image:
 	docker build -f docker/Dockerfile -t yappify-api .
 	@echo "[Yappify] Successfully built docker image. To use it, run 'docker run yappify-api'"
 
-# up-image: run the api in a docker container
-up-image:
+# image-up: run the api in a docker container
+image-up:
 	@echo "[Yappify] Running Yappify API in a docker container..."
 	chmod +x scripts/run_image.sh
 	./scripts/run_image.sh
 	@echo "[Yappify] Yappify API is now running in the background..."
 
-# down-image: terminate the containerized api
-down-image:
+# image-down: terminate the containerized api
+image-down:
 	@echo "[Yappify] Stopping container 'yappify-api'"
 	docker stop yappify-api
 	@echo "[Yappify] Successfully stopped container 'yappify-api'"
