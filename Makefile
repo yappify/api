@@ -9,6 +9,7 @@ help:
 	@echo "6. 'make db-psql': connect to database via psql CLI utility"
 	@echo "7. 'make db-migrate-up': run goose database up migration"
 	@echo "8. 'make db-migrate-down': run goose database down migration"
+	@echo "9. 'make image': build docker image for the api"
 
 # run: run the api
 run:
@@ -51,3 +52,16 @@ db-migrate-down:
 	chmod +x scripts/run_goose.sh
 	@./scripts/run_goose.sh down
 	@echo "[Yappify] Successfully ran goose down migration!"
+
+# image: create a docker image for the api
+image:
+	@echo "[Yappify] Building docker image..."
+	docker build -f docker/Dockerfile -t yappify-api .
+	@echo "[Yappify] Successfully built docker image. To use it, run 'docker run yappify-api'"
+
+# image: run docker image in development
+run-image-dev:
+	@echo "[Yappify] Running Yappify API in a docker container..."
+	chmod +x scripts/run_image.sh
+	./scripts/run_image.sh
+	@echo "[Yappify] Yappify API is now running in the background..."

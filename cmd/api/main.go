@@ -14,10 +14,6 @@ import (
 func main() {
 	port, dbURL := loadEnv()
 
-	if port == "" {
-		port = "8000"
-	}
-
 	conn, err := sql.Open("postgres", dbURL)
 	if err != nil {
 		log.Fatal("Can't connect to database:", err)
@@ -47,7 +43,7 @@ func loadEnv() (string, string) {
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		log.Fatal("PORT is not found in the environment")
+		port = "8000"
 	}
 
 	dbURL := os.Getenv("DB_URL")
