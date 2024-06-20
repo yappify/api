@@ -142,19 +142,23 @@ func (q *Queries) GetUserById(ctx context.Context, id uuid.UUID) (User, error) {
 
 const updateUserById = `-- name: UpdateUserById :one
 UPDATE users
-SET auth_type = $2, name = $3, email = $4, password = $5, is_banned = $6, updated_at = $7
+SET auth_type = COALESCE($2, auth_type),
+    name = COALESCE($3, name),
+    email = COALESCE($4, email),
+    password = COALESCE($5, password),
+    is_banned = COALESCE($6, is_banned),
+    updated_at = NOW()
 WHERE id = $1
 RETURNING id, auth_type, name, email, password, is_banned, created_at, updated_at
 `
 
 type UpdateUserByIdParams struct {
-	ID        uuid.UUID
-	AuthType  string
-	Name      string
-	Email     string
-	Password  sql.NullString
-	IsBanned  bool
-	UpdatedAt time.Time
+	ID       uuid.UUID
+	AuthType string
+	Name     string
+	Email    string
+	Password sql.NullString
+	IsBanned bool
 }
 
 func (q *Queries) UpdateUserById(ctx context.Context, arg UpdateUserByIdParams) (User, error) {
@@ -165,7 +169,6 @@ func (q *Queries) UpdateUserById(ctx context.Context, arg UpdateUserByIdParams) 
 		arg.Email,
 		arg.Password,
 		arg.IsBanned,
-		arg.UpdatedAt,
 	)
 	var i User
 	err := row.Scan(

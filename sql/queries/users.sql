@@ -14,7 +14,12 @@ SELECT * FROM users WHERE email = $1;
 
 -- name: UpdateUserById :one
 UPDATE users
-SET auth_type = $2, name = $3, email = $4, password = $5, is_banned = $6, updated_at = $7
+SET auth_type = COALESCE($2, auth_type),
+    name = COALESCE($3, name),
+    email = COALESCE($4, email),
+    password = COALESCE($5, password),
+    is_banned = COALESCE($6, is_banned),
+    updated_at = NOW()
 WHERE id = $1
 RETURNING *;
 

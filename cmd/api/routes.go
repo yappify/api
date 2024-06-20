@@ -20,8 +20,16 @@ func (api *Config) routes() http.Handler {
 		MaxAge:           300,
 	}))
 
+	// Health check handlers
 	router.Get("/health", api.handleHealthCheck)
+
+	// Users handlers
 	router.Post("/users", api.handleCreateUser)
+	router.Get("/users", api.handleGetAllUsers)
+	router.Get("/users/id/{id}", api.handleGetUserById)
+	router.Get("/users/email/{email}", api.handleGetUserByEmail)
+	router.Patch("/users/id/{id}", api.handleUpdateUserById)
+	router.Delete("/users/id/{id}", api.handleDeleteUserById)
 
 	return router
 }

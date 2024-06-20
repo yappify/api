@@ -12,10 +12,17 @@ type JsonResponse struct {
 	Data    any    `json:"data,omitempty"`
 }
 
-// id, auth_type, name, email, password, is_banned
 type CreateUserPayload struct {
 	AuthType string `json:"auth_type"`
 	Name     string `json:"name"`
 	Email    string `json:"email"`
 	Password string `json:"password,omitempty"`
+}
+
+type UpdateUserPayload struct {
+	AuthType string `json:"auth_type,omitempty"`
+	Name     string `json:"name,omitempty"`
+	Email    string `json:"email,omitempty"`
+	Password string `json:"password,omitempty"`
+	IsBanned bool   `json:"is_banned,omitempty"`
 }
