@@ -26,7 +26,7 @@ make db-up
 make run
 ```
 
-Alternatively, to run the server in a docker container. To do this, run:
+You can alternatively run the server in a docker container. To do this, use:
 1. `make image` to build a docker image of the server
 2. `make image-up` to start the server in a docker container
 3. `make image-down` to stop the container.
