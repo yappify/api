@@ -2,7 +2,6 @@
 
 [![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/yappify/template/blob/main/LICENSE) ![ci-badge](https://github.com/yappify/api/actions/workflows/cicd.yml/badge.svg) ![Go](https://img.shields.io/badge/Go-blue.svg?style=flat&logo=go&logoColor=white)
 
-Lead maintainer: [@abyanmajid](https://github.com/abyanmajid) \
 Documentation: [github.com/yappify/api/tree/main/docs](https://github.com/yappify/api/tree/main/docs)
 
 This source code makes up the RESTful API that serves the backend server of *Yappify*. it is a monolith written in *Go*, with the *chi* router, *PostgreSQL* database, and *sqlc* ORM.
