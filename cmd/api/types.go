@@ -26,3 +26,11 @@ type UpdateUserPayload struct {
 	Password string `json:"password,omitempty"`
 	IsBanned bool   `json:"is_banned,omitempty"`
 }
+
+type Message struct {
+	AuthorID       string `json:"authorID"`
+	Username       string `json:"username"`
+	RoomID         string `json:"roomID"`
+	MessageContent string `json:"messageContent"`
+	Timestamp      string `json:"timestamp"`
+}

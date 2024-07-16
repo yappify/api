@@ -12,10 +12,11 @@ import (
 )
 
 const DEFAULT_PORT = "8000"
+const DEFAULT_WS_PORT = "5050"
 const DEVELOPMENT_DB_URL = "postgresql://postgres:postgres@localhost:5432/db?sslmode=disable"
 
 func main() {
-	port, dbURL := loadEnv()
+	port, dbURL, wsPort := loadEnv()
 
 	conn, err := sql.Open("postgres", dbURL)
 	if err != nil {
@@ -32,22 +33,32 @@ func main() {
 		Handler: api.routes(),
 	}
 
-	log.Printf("Started server on port %s...\n", port)
+	// Start http server in a goroutine
+	go func() {
+		log.Printf("[HTTP] Started server on port %s...\n", port)
 
-	// Start http server
-	err = srv.ListenAndServe()
-	if err != nil {
+		// Start http server
+		err = srv.ListenAndServe()
+		if err != nil {
+			log.Panic(err)
+		}
+	}()
+
+	http.HandleFunc("/ws", webSocketHandler)
+	log.Printf("[WS] Started WebSocket server on port %s...\n", wsPort)
+	err = http.ListenAndServe(":"+wsPort, nil)
+	if err != nil && err != http.ErrServerClosed {
 		log.Panic(err)
 	}
 }
 
-func loadEnv() (string, string) {
+func loadEnv() (string, string, string) {
 	godotenv.Load(".env")
 
 	environment := os.Getenv("ENVIRONMENT")
 	switch environment {
 	case "development":
-		return DEFAULT_PORT, DEVELOPMENT_DB_URL
+		return DEFAULT_PORT, DEVELOPMENT_DB_URL, DEFAULT_WS_PORT
 	case "production":
 		port := os.Getenv("PORT")
 		if port == "" {
@@ -59,10 +70,15 @@ func loadEnv() (string, string) {
 			log.Fatal("DB_URL is not found in the environment")
 		}
 
-		return port, dbURL
+		wsPort := os.Getenv("WS_PORT")
+		if wsPort == "" {
+			wsPort = "5050"
+		}
+
+		return port, dbURL, wsPort
 
 	default:
 		log.Fatal("ENVIRONMENT is not found in the environment")
-		return "", ""
+		return "", "", ""
 	}
 }

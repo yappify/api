@@ -1,6 +1,8 @@
 package main
 
-import "net/http"
+import (
+	"net/http"
+)
 
 func (api *Config) handleHealthCheck(w http.ResponseWriter, r *http.Request) {
 	payload := JsonResponse{
